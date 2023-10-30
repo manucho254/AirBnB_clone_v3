@@ -130,11 +130,11 @@ def places_search():
     if len(data) == 0 or sum([len(obj) for obj in data.values()]) == 0:
         return jsonify(filter_by_amenities(places, amenity_ids))
 
-    if state_ids and city_ids is None:
+    if len(state_ids) > 0 and city_ids is None:
         places = get_state_places(data, state_ids)
         return jsonify(filter_by_amenities(places, amenity_ids))
 
-    if state_ids is None and city_ids:
+    if state_ids is None and len(city_ids) > 0:
         places = get_city_places(data, city_ids)
         return jsonify(filter_by_amenities(places, amenity_ids))
 
