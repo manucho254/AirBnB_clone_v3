@@ -83,7 +83,7 @@ class DBStorage:
         """
         if cls and obj_id:
             objects = self.all(cls)
-            full_name = cls.__name__ + "." obj_id
+            full_name = cls.__name__ + "." + obj_id
             return objects.get(full_name)
         else:
             return None
