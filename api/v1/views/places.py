@@ -137,11 +137,12 @@ def places_search():
         places = get_city_places(data, city_ids)
         return jsonify(filter_by_amenities(places, amenity_ids))
 
-    if state_ids and city_ids:
-        all_places = get_city_places(data, city_ids)
-        all_places.extend(get_state_places(data, state_ids))
+    all_places = get_city_places(data, city_ids)
+    for place in get_state_places(data, state_ids):
+        if place not in all_places:
+            all_places.append(place)
 
-        return jsonify(filter_by_amenities(all_places, amenity_ids))
+    return jsonify(filter_by_amenities(all_places, amenity_ids))
 
 
 def get_state_places(data: dict, states: dict):
@@ -157,6 +158,7 @@ def get_state_places(data: dict, states: dict):
 
     for city in cities:
         for place in city.places:
+            print(place)
             places.append(place.to_dict())
 
     return places
@@ -184,7 +186,7 @@ def filter_by_amenities(places: list, amenities):
         return places
 
     for place in places:
-        if place.amenity_ids == amenities:
+        if set(place.amenity_ids) == set(amenities):
             filtered.append(place)
 
     return filtered
