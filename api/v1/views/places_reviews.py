@@ -11,7 +11,8 @@ from models.place import Place
 from models.user import User
 
 
-@api_views.route("/places/<place_id>/reviews", methods=["GET"])
+@api_views.route("/places/<place_id>/reviews",
+                 methods=["GET"], strict_slashes=False)
 def place_reviews(place_id):
     """ Retrives all Place reviews
     """
@@ -28,7 +29,8 @@ def place_reviews(place_id):
     return jsonify(reviews)
 
 
-@api_views.route("/reviews/<review_id>", methods=["GET"])
+@api_views.route("/reviews/<review_id>",
+                 methods=["GET"], strict_slashes=False)
 def review(review_id):
     """ Retrieve Review by id
     """
@@ -40,7 +42,8 @@ def review(review_id):
     return jsonify(review.to_dict())
 
 
-@api_views.route("/reviews/<review_id>", methods=["DELETE"])
+@api_views.route("/reviews/<review_id>",
+                 methods=["DELETE"], strict_slashes=False)
 def delete_review(review_id):
     """ Deletes Review object
     """
@@ -52,14 +55,15 @@ def delete_review(review_id):
     storage.delete(review)
     storage.save()
 
-    return jsonify({})
+    return jsonify({}), 200
 
 
-@api_views.route("/places/<place_id>/reviews", methods=["POST"])
+@api_views.route("/places/<place_id>/reviews",
+                 methods=["POST"], strict_slashes=False)
 def create_review(place_id):
     """ create new Place
     """
-    if storage.get(Place, place_id):
+    if storage.get(Place, place_id) is None:
         return abort(404)
 
     data = request.get_json()
@@ -77,13 +81,14 @@ def create_review(place_id):
         return jsonify({"error": "Missing text"}), 400
 
     review = Review(**data)
-    review = place_id
+    review.place_id = place_id
     review.save()
 
     return jsonify(review.to_dict()), 201
 
 
-@api_views.route("/reviews/<review_id>", methods=["PUT"])
+@api_views.route("/reviews/<review_id>",
+                 methods=["PUT"], strict_slashes=False)
 def update_review(review_id):
     """ Updates a Place object
     """

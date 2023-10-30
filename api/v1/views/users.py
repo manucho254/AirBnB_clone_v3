@@ -8,17 +8,22 @@ from flask import jsonify, request, abort
 from models import storage
 from models.user import User
 
+import hashlib
 
-@api_views.route("/users", methods=["GET"])
+
+@api_views.route("/users",
+                 methods=["GET"], strict_slashes=False)
 def users():
     """ Retrives all users
     """
-    users = storage.all(User)
+    users = [user.to_dict() for user in
+             storage.all(User).values()]
 
     return jsonify(users)
 
 
-@api_views.route("/users/<user_id>", methods=["GET"])
+@api_views.route("/users/<user_id>",
+                 methods=["GET"], strict_slashes=False)
 def user(user_id):
     """ Retrieve User by id
     """
@@ -30,7 +35,8 @@ def user(user_id):
     return jsonify(user.to_dict())
 
 
-@api_views.route("/users/<user_id>", methods=["DELETE"])
+@api_views.route("/users/<user_id>",
+                 methods=["DELETE"], strict_slashes=False)
 def delete_user(user_id):
     """ Deletes User object
     """
@@ -42,10 +48,11 @@ def delete_user(user_id):
     storage.delete(user)
     storage.save()
 
-    return jsonify({})
+    return jsonify({}), 200
 
 
-@api_views.route("/users", methods=["POST"])
+@api_views.route("/users",
+                 methods=["POST"], strict_slashes=False)
 def create_user():
     """ create new User
     """
@@ -60,13 +67,16 @@ def create_user():
     if data.get("password") is None:
         return jsonify({"error": "Missing password"}), 400
 
+    # hash user password
+    data["password"] = hashlib.md5(data["password"].encode()).hexdigest()
     user = User(**data)
     user.save()
 
     return jsonify(user.to_dict()), 201
 
 
-@api_views.route("/users/<user_id>", methods=["PUT"])
+@api_views.route("/users/<user_id>",
+                 methods=["PUT"], strict_slashes=False)
 def update_user(user_id):
     """ Updates a User object
     """
@@ -80,6 +90,10 @@ def update_user(user_id):
         return jsonify({"error": "Not a JSON"}), 400
 
     ignore_keys = ["id", "email", "created_at", "updated_at"]
+
+    # hash user password
+    if data.get("password"):
+        data["password"] = hashlib.md5(kwargs["password"].encode()).hexdigest()
 
     for key, val in data.items():
         if key not in ignore_keys:
