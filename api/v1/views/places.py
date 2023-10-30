@@ -123,6 +123,7 @@ def places_search():
     city_ids = data.get("cities")
     amenity_ids = data.get("amenities")
 
+    print(data)
     if data is None:
         return jsonify({"error": "Not a JSON"}), 400
 
