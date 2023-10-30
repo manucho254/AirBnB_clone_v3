@@ -58,7 +58,7 @@ def delete_place(place_id):
     return jsonify({}), 200
 
 
-@api_views.route("/cities/<city_id>/cities",
+@api_views.route("/cities/<city_id>/places",
                  methods=["POST"], strict_slashes=False)
 def create_place(city_id):
     """ create new Place
