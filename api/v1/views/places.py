@@ -158,8 +158,10 @@ def get_state_places(data: dict, states: dict):
 
     for city in cities:
         for place in city.places:
-            print(place)
-            places.append(place.to_dict())
+            tmp = place.to_dict()
+            if tmp.get("amenity_ids"):
+                del tmp["amenity_ids"]
+            places.append(tmp)
 
     return places
 
@@ -167,14 +169,18 @@ def get_state_places(data: dict, states: dict):
 def get_city_places(data: dict, cities: dict):
     """ Get all places in a city
     """
-    cities = []
+    places = []
 
     for city_id in data.get("cities"):
         city = storage.get(City, city_id)
         if city:
-            for city in city.places:
-                cities.append(city.to_dict())
-    return cities
+            for place in city.places:
+                tmp = place.to_dict()
+                if tmp.get("amenity_ids"):
+                    del tmp["amenity_ids"]
+                places.append(tmp)
+
+    return places
 
 
 def filter_by_amenities(places: list, amenities):
@@ -187,6 +193,9 @@ def filter_by_amenities(places: list, amenities):
 
     for place in places:
         if set(place.amenity_ids) == set(amenities):
-            filtered.append(place)
+            tmp = place.to_dict()
+            if tmp.get("amenity_ids"):
+                del tmp["amenity_ids"]
+            filtered.append(tmp)
 
     return filtered
