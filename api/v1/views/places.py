@@ -11,7 +11,7 @@ from models.place import Place
 from models.user import User
 
 
-@api_views.route("/states/<state_id>/cities",
+@api_views.route("/cities/<city_id>/places",
                  methods=["GET"], strict_slashes=False)
 def city_places(city_id):
     """ Retrives all City cities
@@ -24,7 +24,7 @@ def city_places(city_id):
 
     tmp = city.places
     for place in tmp:
-        place.append(place.to_dict())
+        places.append(place.to_dict())
 
     return jsonify(places)
 
