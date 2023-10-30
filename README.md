@@ -150,6 +150,18 @@ EOF  all  create  destroy  help  quit  show  update
 (hbnb) quit
 ```
 
+### Helper bash scripts
+
+1. ./change_perm - Add executable permissions to python scripts.
+
+2. ./run_tests - run all tests in the project.
+
+3. ./push - push code to github
+   - Usage: ./push '<branch>' '<commit message>'
+
+4. ./check_style - check if the code uses pep8 style.
+
+
 ## Bugs
 No known bugs at this time. 
 
@@ -159,4 +171,4 @@ Jennifer Huang - [Github](https://github.com/jhuang10123) / [Twitter](https://tw
 
 Second part of Airbnb: Joann Vuong
 ## License
-Public Domain. No copy write protection. 
+Public Domain. No copy write protection.
