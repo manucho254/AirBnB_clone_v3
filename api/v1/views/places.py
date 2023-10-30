@@ -92,7 +92,7 @@ def create_place(city_id):
 def update_place(place_id):
     """ Updates a Place object
     """
-    place = storage.get(City, city_id)
+    place = storage.get(Place, place_id)
     data = request.get_json()
 
     if place is None:
