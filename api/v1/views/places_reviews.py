@@ -63,7 +63,7 @@ def delete_review(review_id):
 def create_review(place_id):
     """ create new Place
     """
-    if storage.get(Place, place_id):
+    if storage.get(Place, place_id) is None:
         return abort(404)
 
     data = request.get_json()
