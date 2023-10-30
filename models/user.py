@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 """ holds class User"""
+from hashlib import md5
 import models
 from models.base_model import BaseModel, Base
 
@@ -50,5 +51,12 @@ class User(BaseModel, Base):
         return new_dict
 
     def __init__(self, *args, **kwargs):
-        """initializes user"""
+        """Initializes user"""
         super().__init__(*args, **kwargs)
+        self.password = self._hash_password(kwargs.get("password"))
+
+    def _hash_password(self, password):
+        """Hash the password using MD5"""
+        if password:
+            return md5(password.encode()).hexdigest()
+        return password
