@@ -5,7 +5,7 @@ from api.v1.views import app_views as api_views
 
 from flask import jsonify, request, abort
 
-from models import storage
+from models import storage, storage_t
 from models.city import City
 from models.place import Place
 from models.state import State
@@ -192,7 +192,10 @@ def filter_by_amenities(places: list, amenity_ids):
         return places
 
     for place in places:
-        amenity_ids = place.get("amenity_ids")
+        if storage_t == "db":
+            amenity_ids = place.get("amenities")
+        else:
+            amenity_ids = place.get("amenity_ids")
         if amenity_ids:
             if sorted(amenity_ids) == sorted(amenity_ids):
                 tmp = place.to_dict()
