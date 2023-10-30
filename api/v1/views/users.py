@@ -8,6 +8,8 @@ from flask import jsonify, request, abort
 from models import storage
 from models.user import User
 
+import hashlib
+
 
 @api_views.route("/users",
                  methods=["GET"], strict_slashes=False)
@@ -65,6 +67,8 @@ def create_user():
     if data.get("password") is None:
         return jsonify({"error": "Missing password"}), 400
 
+    # encode user password to md5 hash
+    data["password"] = hashlib.md5(data["password"].encode()).hexdigest()
     user = User(**data)
     user.save()
 
@@ -84,6 +88,10 @@ def update_user(user_id):
 
     if data is None:
         return jsonify({"error": "Not a JSON"}), 400
+
+    # encode user password to md5 hash
+    if data.get("password"):
+        data["password"] = hashlib.md5(data["password"].encode()).hexdigest()
 
     ignore_keys = ["id", "email", "created_at", "updated_at"]
 
