@@ -14,7 +14,8 @@ from models.user import User
 def users():
     """ Retrives all users
     """
-    users = storage.all(User)
+    users = [user.to_dict() for user in
+             storage.all(User).values()]
 
     return jsonify(users)
 
