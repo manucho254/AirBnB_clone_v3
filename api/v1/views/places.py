@@ -8,6 +8,7 @@ from flask import jsonify, request, abort
 from models import storage
 from models.city import City
 from models.place import Place
+from models.state import State
 from models.user import User
 
 
@@ -109,3 +110,81 @@ def update_place(place_id):
             place.save()
 
     return jsonify(place.to_dict()), 200
+
+
+@api_views.route("/places_search",
+                 methods=["POST"], strict_slashes=False)
+def places_search():
+    """
+    """
+    data = request.get_json()
+    places = [place.to_dict() for place in storage.all(Place).values()]
+    state_ids = data.get("states")
+    city_ids = data.get("cities")
+    amenity_ids = data.get("amenities")
+
+    if data is None:
+        return jsonify({"error": "Not a JSON"}), 400
+
+    if len(data) == 0 or sum([len(obj) for obj in data.values()]) == 0:
+        return jsonify(filter_by_amenities(places, amenity_ids))
+
+    if state_ids and city_ids is None and amenity_ids is None:
+        places = get_state_places(data, state_ids)
+        return jsonify(filter_by_amenities(places, amenity_ids))
+
+    if state_ids is None and city_ids and amenity_ids is None:
+        places = get_city_places(data, city_ids)
+        return jsonify(filter_by_amenities(places, amenity_ids))
+
+    if state_ids and city_ids:
+        all_places = get_city_places(data, city_ids)
+        all_places.extend(get_state_places(data, state_ids))
+
+        return jsonify(filter_by_amenities(all_places, amenity_ids))
+
+
+def get_state_places(data: dict, states: dict):
+    """ get all places in a State
+    """
+    cities = []
+    places = []
+
+    for state_id in data.get("states"):
+        state = storage.get(State, state_id)
+        if state:
+            cities.extend(state.cities)
+
+    for city in cities:
+        for place in city.places:
+            places.append(place.to_dict())
+
+    return places
+
+
+def get_city_places(data: dict, cities: dict):
+    """ Get all places in a city
+    """
+    cities = []
+
+    for city_id in data.get("cities"):
+        city = storage.get(City, city_id)
+        if city:
+            for city in city.places:
+                cities.append(city.to_dict())
+    return cities
+
+
+def filter_by_amenities(places: list, amenities):
+    """ filter data by amenities
+    """
+    filtered = []
+
+    if amenities is None:
+        return places
+
+    for place in places:
+        if place.amenity_ids == amenities:
+            filtered.append(place)
+
+    return filtered
