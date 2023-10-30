@@ -23,7 +23,7 @@ def state_cities(state_id):
 
     tmp = state.cities
     for city in tmp:
-        cities.append(city)
+        cities.append(city.to_dict())
 
     return jsonify(cities)
 
