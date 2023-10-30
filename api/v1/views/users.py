@@ -9,7 +9,8 @@ from models import storage
 from models.user import User
 
 
-@api_views.route("/users", methods=["GET"])
+@api_views.route("/users",
+                 methods=["GET"], strict_slashes=False)
 def users():
     """ Retrives all users
     """
@@ -18,7 +19,8 @@ def users():
     return jsonify(users)
 
 
-@api_views.route("/users/<user_id>", methods=["GET"])
+@api_views.route("/users/<user_id>",
+                 methods=["GET"], strict_slashes=False)
 def user(user_id):
     """ Retrieve User by id
     """
@@ -30,7 +32,8 @@ def user(user_id):
     return jsonify(user.to_dict())
 
 
-@api_views.route("/users/<user_id>", methods=["DELETE"])
+@api_views.route("/users/<user_id>",
+                 methods=["DELETE"], strict_slashes=False)
 def delete_user(user_id):
     """ Deletes User object
     """
@@ -42,10 +45,11 @@ def delete_user(user_id):
     storage.delete(user)
     storage.save()
 
-    return jsonify({})
+    return jsonify({}), 200
 
 
-@api_views.route("/users", methods=["POST"])
+@api_views.route("/users",
+                 methods=["POST"], strict_slashes=False)
 def create_user():
     """ create new User
     """
@@ -66,7 +70,8 @@ def create_user():
     return jsonify(user.to_dict()), 201
 
 
-@api_views.route("/users/<user_id>", methods=["PUT"])
+@api_views.route("/users/<user_id>",
+                 methods=["PUT"], strict_slashes=False)
 def update_user(user_id):
     """ Updates a User object
     """

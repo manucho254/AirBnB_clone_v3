@@ -9,7 +9,8 @@ from models import storage
 from models.amenity import Amenity
 
 
-@api_views.route("/amenities", methods=["GET"])
+@api_views.route("/amenities",
+                 methods=["GET"], strict_slashes=False)
 def amenities():
     """ Retrives all amenities
     """
@@ -18,7 +19,8 @@ def amenities():
     return jsonify(amenities)
 
 
-@api_views.route("/amenities/<amenity_id>", methods=["GET"])
+@api_views.route("/amenities/<amenity_id>",
+                 methods=["GET"], strict_slashes=False)
 def amenity(amenity_id):
     """ Retrieve amenity by id
     """
@@ -30,7 +32,8 @@ def amenity(amenity_id):
     return jsonify(amenity.to_dict())
 
 
-@api_views.route("/amenities/<amenity_id>", methods=["DELETE"])
+@api_views.route("/amenities/<amenity_id>",
+                 methods=["DELETE"], strict_slashes=False)
 def delete_amenity(amenity_id):
     """ Deletes amenity object
     """
@@ -42,10 +45,11 @@ def delete_amenity(amenity_id):
     storage.delete(amenity)
     storage.save()
 
-    return jsonify({})
+    return jsonify({}), 200
 
 
-@api_views.route("/amenities", methods=["POST"])
+@api_views.route("/amenities",
+                 methods=["POST"], strict_slashes=False)
 def create_amenity():
     """ create new amenity
     """
@@ -63,7 +67,8 @@ def create_amenity():
     return jsonify(amenity.to_dict()), 201
 
 
-@api_views.route("/amenities/<amenity_id>", methods=["PUT"])
+@api_views.route("/amenities/<amenity_id>",
+                 methods=["PUT"], strict_slashes=False)
 def update_amenity(amenity_id):
     """ Updates a Amenity object
     """
