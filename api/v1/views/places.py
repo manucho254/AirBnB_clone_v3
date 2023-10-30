@@ -131,11 +131,11 @@ def places_search():
 
     if state_ids is not None and city_ids is None:
         places = get_state_places(data, state_ids)
-        return jsonify(filter_by_amenities(places, amenity_ids))
+        return jsonify(places)
 
     if state_ids is None and city_ids is not None:
         places = get_city_places(data, city_ids)
-        return jsonify(filter_by_amenities(places, amenity_ids))
+        return jsonify(places, amenity_ids)
 
     all_places = get_city_places(data, city_ids)
     for place in get_state_places(data, state_ids):
