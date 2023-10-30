@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 """ view for Amenity objects that handles all default RESTFul API actions
 """
-from api.v1.views import app_views
+from api.v1.views import app_views as api_views
 
-from flask import jsonify
+from flask import jsonify, request, abort
 
 from models import storage
 from models.amenity import Amenity
@@ -25,9 +25,9 @@ def amenity(amenity_id):
     amenity = storage.get(Amenity, amenity_id)
 
     if amenity is None:
-        return jsonify({"error": "Not found"}), 404
+        return abort(404)
 
-    return jsonify(amenity)
+    return jsonify(amenity.to_dict())
 
 
 @api_views.route("/amenities/<amenity_id>", methods=["DELETE"])
@@ -37,7 +37,7 @@ def delete_amenity(amenity_id):
     amenity = storage.get(Amenity, amenity_id)
 
     if amenity is None:
-        return jsonify({"error": "Not found"}), 404
+        return abort(404)
 
     storage.delete(amenity)
     storage.save()
@@ -60,7 +60,7 @@ def create_amenity():
     amenity = Amenity(**data)
     amenity.save()
 
-    return jsonify(amenity), 200
+    return jsonify(amenity.to_dict()), 201
 
 
 @api_views.route("/amenities/<amenity_id>", methods=["PUT"])
@@ -71,7 +71,7 @@ def update_amenity(amenity_id):
     data = request.get_json()
 
     if amenity is None:
-        return jsonify({"error": "Not found"}), 404
+        return abort(404)
 
     if data is None:
         return jsonify({"error": "Not a JSON"}), 400
@@ -83,4 +83,4 @@ def update_amenity(amenity_id):
             setattr(amenity, key, val)
             amenity.save()
 
-    return jsonify(amenity), 200
+    return jsonify(amenity.to_dict()), 200
