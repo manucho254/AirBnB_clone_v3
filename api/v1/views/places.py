@@ -123,18 +123,17 @@ def places_search():
     city_ids = data.get("cities")
     amenity_ids = data.get("amenities")
 
-    print(data)
     if data is None:
         return jsonify({"error": "Not a JSON"}), 400
 
     if len(data) == 0 or sum([len(obj) for obj in data.values()]) == 0:
         return jsonify(filter_by_amenities(places, amenity_ids))
 
-    if len(state_ids) > 0 and city_ids is None:
+    if state_ids is not None and city_ids is None:
         places = get_state_places(data, state_ids)
         return jsonify(filter_by_amenities(places, amenity_ids))
 
-    if state_ids is None and len(city_ids) > 0:
+    if state_ids is None and city_ids is not None:
         places = get_city_places(data, city_ids)
         return jsonify(filter_by_amenities(places, amenity_ids))
 
